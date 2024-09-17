@@ -3,31 +3,29 @@ package com.vote.votemanagement.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.Date;
-import java.util.List;
-
-@Entity
-@Table(name = "polls")
 @Data
+@Entity
 public class Poll {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-    private String description;
+    private String question;
 
-    @Temporal(TemporalType.DATE)
-    private Date startDate;
-
-    @Temporal(TemporalType.DATE)
-    private Date endDate;
 
     @ManyToOne
-    @JoinColumn(name = "election_id")
+    @JoinColumn(name = "election_id", nullable = false)
     private Election election;
 
-    @OneToMany(mappedBy = "poll", cascade = CascadeType.ALL)
-    private List<Candidate> candidates;
+    // Constructors
+    public Poll() {     }
+
+    public Poll(String question, Election election) {
+        this.question = question;
+        this.election = election;
+    }
+
+
+
 }

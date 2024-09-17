@@ -3,8 +3,10 @@ package com.vote.votemanagement.controller;
 import com.vote.votemanagement.entity.Poll;
 import com.vote.votemanagement.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -14,25 +16,28 @@ public class PollController {
     @Autowired
     private PollService pollService;
 
-    @PostMapping
-    public Poll createPoll(@RequestBody Poll poll) {
-        return pollService.savePoll(poll);
+    @GetMapping
+    public List<Poll> getAllPolls() {
+        return pollService.getAllPolls();
     }
 
     @GetMapping("/{id}")
-    public Optional<Poll> getPollById(@PathVariable Long id) {
-        return pollService.findPollById(id);
+    public ResponseEntity<Poll> getPollById(@PathVariable Long id) {
+        Optional<Poll> poll = pollService.getPollById(id);
+        return poll.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+//
+//   // Create a new poll
+//   @PostMapping
+//   public ResponseEntity<Poll> createPoll(@RequestBody Poll pollRequest) {
+//       Poll createdPoll = pollService.createPoll(pollRequest.toPoll(), pollRequest.getId());
+//       return ResponseEntity.ok(createdPoll);
+//   }
 
-    @PutMapping("/{id}")
-    public Poll updatePoll(@PathVariable Long id, @RequestBody Poll updatedPoll) throws Exception {
-        return pollService.savePoll(updatedPoll);
-    }
 
     @DeleteMapping("/{id}")
-    public void deletePoll(@PathVariable Long id) throws Exception {
-        pollService.findPollById(id)
-                .orElseThrow(() -> new Exception("Poll not found"));
+    public ResponseEntity<Void> deletePoll(@PathVariable Long id) {
+        pollService.deletePoll(id);
+        return ResponseEntity.noContent().build();
     }
 }
-

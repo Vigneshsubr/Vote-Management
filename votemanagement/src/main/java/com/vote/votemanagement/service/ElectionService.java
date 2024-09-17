@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ElectionService {
@@ -16,39 +15,34 @@ public class ElectionService {
 
     // Create a new election
     public Election createElection(Election election) {
+        // Handle the relationships correctly
         return electionRepository.save(election);
     }
 
-    // Find an election by its ID
-    public Optional<Election> findElectionById(Long id) {
-        return electionRepository.findById(id);
-    }
-
     // Get all elections
-    public List<Election> findAllElections() {
+    public List<Election> getAllElections() {
         return electionRepository.findAll();
     }
 
-    // Update an election
-    public Election updateElection(Long id, Election updatedElection) throws Exception {
-        Optional<Election> existingElection = electionRepository.findById(id);
-        if (existingElection.isPresent()) {
-            Election election = existingElection.get();
-            election.setTitle(updatedElection.getTitle());
-            election.setStartDate(updatedElection.getStartDate());
-            election.setEndDate(updatedElection.getEndDate());
-            return electionRepository.save(election);
-        } else {
-            throw new Exception("Election not found");
-        }
+    // Get election by ID
+    public Election getElectionById(Long id) {
+        return electionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Election not found for id: " + id));
     }
 
-    // Delete an election by its ID
-    public void deleteElection(Long id) throws Exception {
-        if (electionRepository.existsById(id)) {
-            electionRepository.deleteById(id);
-        } else {
-            throw new Exception("Election not found");
-        }
+    // Update election by ID
+    public Election updateElection(Long id, Election electionDetails) {
+        Election election = getElectionById(id);
+        election.setName(electionDetails.getName());
+        // Make sure to properly manage Polls
+        // You might need to update or clear existing Polls
+        election.setPolls(electionDetails.getPolls());
+        return electionRepository.save(election);
+    }
+
+    // Delete election by ID
+    public void deleteElection(Long id) {
+        Election election = getElectionById(id);
+        electionRepository.delete(election);
     }
 }

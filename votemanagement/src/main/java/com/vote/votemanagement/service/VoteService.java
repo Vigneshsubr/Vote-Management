@@ -1,13 +1,10 @@
 package com.vote.votemanagement.service;
 
 import com.vote.votemanagement.entity.Vote;
-import com.vote.votemanagement.entity.User;
-import com.vote.votemanagement.entity.Poll;
-import com.vote.votemanagement.entity.Candidate;
 import com.vote.votemanagement.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -16,20 +13,26 @@ public class VoteService {
     @Autowired
     private VoteRepository voteRepository;
 
-    public Vote castVote(User voter, Poll poll, Candidate candidate) throws Exception {
-        // Check if the user has already voted in this poll
-        Optional<Vote> existingVote = voteRepository.findByVoterAndPoll(voter, poll);
-        if (existingVote.isPresent()) {
-            throw new Exception("Duplicate vote not allowed. You have already voted in this poll.");
-        }
+    public List<Vote> getAllVotes() {
+        return voteRepository.findAll();
+    }
 
-        // Create and save the new vote
-        Vote newVote = new Vote();
-        newVote.setVoter(voter);
-        newVote.setPoll(poll);
-        newVote.setCandidate(candidate);
-        newVote.setVoteTime(new java.util.Date());
+    public Optional<Vote> getVoteById(Long id) {
+        return voteRepository.findById(id);
+    }
 
-        return voteRepository.save(newVote);
+    public Vote createVote(Vote vote) {
+        return voteRepository.save(vote);
+    }
+
+    public Vote updateVote(Long id, Vote voteDetails) {
+        Vote vote = voteRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Vote not found"));
+        vote.setUser(voteDetails.getUser());
+        vote.setCandidate(voteDetails.getCandidate());
+        return voteRepository.save(vote);
+    }
+
+    public void deleteVote(Long id) {
+        voteRepository.deleteById(id);
     }
 }

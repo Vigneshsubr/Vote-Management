@@ -3,6 +3,7 @@ package com.vote.votemanagement.controller;
 import com.vote.votemanagement.entity.Candidate;
 import com.vote.votemanagement.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -15,30 +16,30 @@ public class CandidateController {
     @Autowired
     private CandidateService candidateService;
 
-    @PostMapping
-    public Candidate createCandidate(@RequestBody Candidate candidate) {
-        return candidateService.saveCandidate(candidate);
+    @GetMapping
+    public List<Candidate> getAllCandidates() {
+        return candidateService.getAllCandidates();
     }
 
     @GetMapping("/{id}")
-    public Optional<Candidate> getCandidateById(@PathVariable Long id) {
-        return candidateService.findCandidateById(id);
+    public ResponseEntity<Candidate> getCandidateById(@PathVariable Long id) {
+        Optional<Candidate> candidate = candidateService.getCandidateById(id);
+        return candidate.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    @GetMapping
-    public List<Candidate>  getAllCandidates(){
-        return this.candidateService.findAllCandidates();
+    @PostMapping
+    public Candidate createCandidate(@RequestBody Candidate candidate) {
+        return candidateService.createCandidate(candidate);
     }
 
     @PutMapping("/{id}")
-    public Candidate updateCandidate(@PathVariable Long id, @RequestBody Candidate updatedCandidate) throws Exception {
-        return candidateService.saveCandidate(updatedCandidate);
+    public ResponseEntity<Candidate> updateCandidate(@PathVariable Long id, @RequestBody Candidate candidateDetails) {
+        return ResponseEntity.ok(candidateService.updateCandidate(id, candidateDetails));
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCandidate(@PathVariable Long id) throws Exception {
-        candidateService.findCandidateById(id)
-                .orElseThrow(() -> new Exception("Candidate not found"));
+    public ResponseEntity<Void> deleteCandidate(@PathVariable Long id) {
+        candidateService.deleteCandidate(id);
+        return ResponseEntity.noContent().build();
     }
 }
-

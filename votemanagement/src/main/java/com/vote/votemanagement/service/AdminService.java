@@ -4,41 +4,35 @@ import com.vote.votemanagement.entity.Admin;
 import com.vote.votemanagement.repository.AdminRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class AdminService {
-    @Autowired
-    public AdminRepository adminRepository;
 
-    public Admin creatAdmin(Admin admin) {
-        return this.adminRepository.save(admin);
+    @Autowired
+    private AdminRepository adminRepository;
+
+    public List<Admin> getAllAdmins() {
+        return adminRepository.findAll();
     }
-    // Find an admin by ID
-    public Optional<Admin> findAdminById(Long id) {
+
+    public Optional<Admin> getAdminById(Long id) {
         return adminRepository.findById(id);
     }
 
-
-
-    // Delete an admin by ID
-    public void deleteAdmin(Long id) throws Exception {
-        if (adminRepository.existsById(id)) {
-            adminRepository.deleteById(id);
-        } else {
-            throw new Exception("Admin not found");
-        }
+    public Admin createAdmin(Admin admin) {
+        return adminRepository.save(admin);
     }
 
-
-    public List<Admin> getAllAdmins() {
-        return this.adminRepository.findAll();
+    public Admin updateAdmin(Long id, Admin adminDetails) {
+        Admin admin = adminRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Admin not found"));
+        admin.setUsername(adminDetails.getUsername());
+        admin.setEmail(adminDetails.getEmail());
+        return adminRepository.save(admin);
     }
 
-    public String deleteAdminById(Long id) {
-        this.adminRepository.deleteById(id);
-        return "Deleted Admin Successfully";
+    public void deleteAdmin(Long id) {
+        adminRepository.deleteById(id);
     }
 }
