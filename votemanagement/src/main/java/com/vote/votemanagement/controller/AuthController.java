@@ -4,6 +4,7 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.vote.votemanagement.config.TokenProvider;
 import com.vote.votemanagement.dto.*;
 import com.vote.votemanagement.entity.Admin;
+import com.vote.votemanagement.entity.Candidate;
 import com.vote.votemanagement.entity.User;
 import com.vote.votemanagement.exception.CustomException;
 import com.vote.votemanagement.exception.InvalidJwtException;
@@ -63,6 +64,14 @@ public class AuthController {
         return authService.signUpAdmin(adminDTO);
     }
 
+    @PostMapping("sign-up/candidate")
+    public ResponseDTO signUpCandidate(@RequestBody CandidateDTO candidateDTO)throws InvalidJwtException{
+        if (candidateDTO.getPollId() == null) {
+            throw new InvalidJwtException("Poll ID must not be null");
+        }
+        return authService.signUpCandidate(candidateDTO);
+    }
+
     @PostMapping("/sign-in")
     public ResponseDTO signIn(@RequestBody SignInDto user) throws AuthenticationException,CustomException {
 
@@ -80,9 +89,6 @@ public class AuthController {
                 throw new CustomException("Password is not valid");
             }
 
-
-
-
             var userNamePassword = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
             var authorizedUser = authenticationManager.authenticate(userNamePassword);
             var principal = authorizedUser.getPrincipal();
@@ -96,7 +102,12 @@ public class AuthController {
              else if (principal instanceof Admin) {
                 accessToken = tokenProvider.generateAccessToken((Admin) principal);
                 refreshToken = tokenProvider.generateRefreshToken((Admin) principal);
-            } else {
+            }
+            else if (principal instanceof Candidate) {
+                accessToken = tokenProvider.generateAccessToken((Candidate) principal);
+                refreshToken = tokenProvider.generateRefreshToken((Candidate) principal);
+            }
+             else {
                 // handle default case or throw an exception
                 accessToken = tokenProvider.generateAccessToken((UserDetails) principal);
                 refreshToken = tokenProvider.generateRefreshToken((UserDetails) principal);

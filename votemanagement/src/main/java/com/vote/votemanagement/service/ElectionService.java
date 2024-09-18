@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ElectionService {
@@ -13,36 +14,23 @@ public class ElectionService {
     @Autowired
     private ElectionRepository electionRepository;
 
-    // Create a new election
-    public Election createElection(Election election) {
-        // Handle the relationships correctly
-        return electionRepository.save(election);
-    }
-
-    // Get all elections
+    // Retrieve all elections
     public List<Election> getAllElections() {
         return electionRepository.findAll();
     }
 
-    // Get election by ID
-    public Election getElectionById(Long id) {
-        return electionRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Election not found for id: " + id));
+    // Retrieve election by ID
+    public Optional<Election> getElectionById(Long id) {
+        return electionRepository.findById(id);
     }
 
-    // Update election by ID
-    public Election updateElection(Long id, Election electionDetails) {
-        Election election = getElectionById(id);
-        election.setName(electionDetails.getName());
-        // Make sure to properly manage Polls
-        // You might need to update or clear existing Polls
-        election.setPolls(electionDetails.getPolls());
+    // Create a new election
+    public Election createElection(Election election) {
         return electionRepository.save(election);
     }
 
     // Delete election by ID
     public void deleteElection(Long id) {
-        Election election = getElectionById(id);
-        electionRepository.delete(election);
+        electionRepository.deleteById(id);
     }
 }

@@ -10,33 +10,33 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/candidates")
+@RequestMapping("/api/v1/candidates")
 public class CandidateController {
 
     @Autowired
     private CandidateService candidateService;
 
+    // Get all candidates
     @GetMapping
     public List<Candidate> getAllCandidates() {
         return candidateService.getAllCandidates();
     }
 
+    // Get candidate by ID
     @GetMapping("/{id}")
     public ResponseEntity<Candidate> getCandidateById(@PathVariable Long id) {
         Optional<Candidate> candidate = candidateService.getCandidateById(id);
         return candidate.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
+    // Create a new candidate
     @PostMapping
-    public Candidate createCandidate(@RequestBody Candidate candidate) {
-        return candidateService.createCandidate(candidate);
+    public ResponseEntity<Candidate> createCandidate(@RequestBody Candidate candidateRequest, @RequestParam Long pollId) {
+        Candidate createdCandidate = candidateService.createCandidate(candidateRequest, pollId);
+        return ResponseEntity.ok(createdCandidate);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Candidate> updateCandidate(@PathVariable Long id, @RequestBody Candidate candidateDetails) {
-        return ResponseEntity.ok(candidateService.updateCandidate(id, candidateDetails));
-    }
-
+    // Delete candidate by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteCandidate(@PathVariable Long id) {
         candidateService.deleteCandidate(id);

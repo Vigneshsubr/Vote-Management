@@ -14,7 +14,7 @@ import java.util.Set;
 @Data
 @Entity
 @Table(name = "candidates", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {"user_id", "email","poll_id"})
+        @UniqueConstraint(columnNames = { "email"})
 })
 public class Candidate implements UserDetails {
 
@@ -23,22 +23,23 @@ public class Candidate implements UserDetails {
     private Long id;
 
     @Column(nullable = false)
-    private String name;
+    private String username;
 
     @Column
     private String email;
+
+    @Column
+    private String password;
+
+    @Column
+    private String gender;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
     @ManyToOne
-    @JoinColumn(name = "poll_id", nullable = false)
+    @JoinColumn(name = "poll_id")
     private Poll poll;
-
-    @OneToMany(mappedBy = "candidate", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<Vote> votes;
-
-
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -48,7 +49,7 @@ public class Candidate implements UserDetails {
 
     @Override
     public String getPassword() {
-        return "";
+        return this.password;
     }
 
 
@@ -68,6 +69,7 @@ public class Candidate implements UserDetails {
         return UserDetails.super.isAccountNonLocked();
     }
 
+
     @Override
     public boolean isCredentialsNonExpired() {
         return UserDetails.super.isCredentialsNonExpired();
@@ -77,4 +79,6 @@ public class Candidate implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
+
 }

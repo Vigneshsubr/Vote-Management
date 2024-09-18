@@ -15,7 +15,6 @@ public class Poll {
 
 
     @ManyToOne
-    @JoinColumn(name = "election_id", nullable = false)
     private Election election;
 
     // Constructors

@@ -3,6 +3,7 @@ package com.vote.votemanagement.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -15,14 +16,16 @@ public class Election {
 
     private String name;
 
-    @OneToMany(mappedBy = "election", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Poll> polls;
+    private LocalDate startDate; // New field for start date
+    private LocalDate endDate;   // New field for end date
 
     // Constructors
     public Election() {}
 
-    public Election(String name) {
+    public Election(String name, LocalDate startDate, LocalDate endDate) {
         this.name = name;
+        this.startDate = startDate;
+        this.endDate = endDate;
     }
 
     // Getters and Setters
@@ -42,11 +45,20 @@ public class Election {
         this.name = name;
     }
 
-    public List<Poll> getPolls() {
-        return polls;
+    public LocalDate getStartDate() {
+        return startDate;
     }
 
-    public void setPolls(List<Poll> polls) {
-        this.polls = polls;
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
 }

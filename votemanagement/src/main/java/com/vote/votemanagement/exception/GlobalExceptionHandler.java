@@ -3,8 +3,10 @@ package com.vote.votemanagement.exception;
 import com.vote.votemanagement.dto.ResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -24,5 +26,13 @@ public class GlobalExceptionHandler {
         responseDTO.setMessage("An unexpected error occurred");
         responseDTO.setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
         return new ResponseEntity<>(responseDTO, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(InvalidVoteException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<String> handleInvalidVoteException(InvalidVoteException ex) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ex.getMessage());
     }
 }

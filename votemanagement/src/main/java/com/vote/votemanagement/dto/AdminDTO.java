@@ -1,5 +1,8 @@
 package com.vote.votemanagement.dto;
 
+import lombok.Data;
+
+@Data
 public class AdminDTO {
 
     public String password;

@@ -5,8 +5,10 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.vote.votemanagement.entity.Admin;
+import com.vote.votemanagement.entity.Candidate;
 import com.vote.votemanagement.entity.User;
 import com.vote.votemanagement.repository.AdminRepository;
+import com.vote.votemanagement.repository.CandidateRepository;
 import com.vote.votemanagement.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Date;
 import java.util.regex.Pattern;
 
 @Service
@@ -28,14 +31,20 @@ public class TokenProvider {
     @Autowired
     UserRepository userRepository;
 
+    @Autowired
+    CandidateRepository candidateRepository;
+
     @Value("${security.jwt.secret-key}")
     String secretKey;
 
     public String generateAccessToken(UserDetails user) {
         try {
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
-            return JWT.create().withSubject(user.getUsername()).withClaim("UserEmail", user.getUsername())
-                    .withExpiresAt(genAccessExperationDate()).sign(algorithm);
+            return JWT.create().withSubject(user.getUsername()).
+                    withClaim("UserEmail", user.getUsername())
+                    .withIssuedAt(Instant.now()) // Add issuedAt claim
+                    .withExpiresAt(genAccessExperationDate()).
+                    sign(algorithm);
         } catch (JWTCreationException exception) {
             throw new JWTCreationException("Error while generating access token", exception);
         }
@@ -111,6 +120,11 @@ public class TokenProvider {
         Admin admin = adminRepository.findByEmail(username);
         if (admin != null) {
             return (UserDetails) admin;
+        }
+
+        Candidate candidate = candidateRepository.findByEmail(username);
+        if(candidate!=null){
+            return (UserDetails) candidate;
         }
         throw new UsernameNotFoundException("User not found with email: " + username);
     }

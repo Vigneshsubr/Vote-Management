@@ -10,31 +10,33 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/polls")
+@RequestMapping("/api/v1/polls")
 public class PollController {
 
     @Autowired
     private PollService pollService;
 
+    // Get all polls
     @GetMapping
     public List<Poll> getAllPolls() {
         return pollService.getAllPolls();
     }
 
+    // Get poll by ID
     @GetMapping("/{id}")
     public ResponseEntity<Poll> getPollById(@PathVariable Long id) {
         Optional<Poll> poll = pollService.getPollById(id);
         return poll.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
-//
-//   // Create a new poll
-//   @PostMapping
-//   public ResponseEntity<Poll> createPoll(@RequestBody Poll pollRequest) {
-//       Poll createdPoll = pollService.createPoll(pollRequest.toPoll(), pollRequest.getId());
-//       return ResponseEntity.ok(createdPoll);
-//   }
 
+    // Create a new poll
+    @PostMapping
+    public ResponseEntity<Poll> createPoll(@RequestBody Poll pollRequest, @RequestParam Long electionId) {
+        Poll createdPoll = pollService.createPoll(pollRequest, electionId);
+        return ResponseEntity.ok(createdPoll);
+    }
 
+    // Delete poll by ID
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePoll(@PathVariable Long id) {
         pollService.deletePoll(id);

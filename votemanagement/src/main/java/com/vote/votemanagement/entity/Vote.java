@@ -21,5 +21,7 @@ public class Vote {
     private User user;
 
 
-
+    @ManyToOne
+    @JoinColumn(name = "poll_id", nullable = false)
+    private Poll poll;  // Add this field to map the Poll entity
 }

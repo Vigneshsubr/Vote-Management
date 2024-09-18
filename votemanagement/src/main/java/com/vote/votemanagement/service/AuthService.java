@@ -1,16 +1,17 @@
 package com.vote.votemanagement.service;
 
 import com.vote.votemanagement.config.TokenProvider;
-import com.vote.votemanagement.dto.AdminDTO;
-import com.vote.votemanagement.dto.ResponseDTO;
-import com.vote.votemanagement.dto.UserDto;
+import com.vote.votemanagement.dto.*;
 import com.vote.votemanagement.entity.Admin;
+import com.vote.votemanagement.entity.Candidate;
+import com.vote.votemanagement.entity.Poll;
 import com.vote.votemanagement.entity.User;
 import com.vote.votemanagement.enums.UserRole;
 import com.vote.votemanagement.exception.CustomException;
 import com.vote.votemanagement.exception.InvalidJwtException;
 import com.vote.votemanagement.repository.AdminRepository;
 import com.vote.votemanagement.repository.CandidateRepository;
+import com.vote.votemanagement.repository.PollRepository;
 import com.vote.votemanagement.repository.UserRepository;
 import com.vote.votemanagement.util.Constants;
 import jakarta.transaction.Transactional;
@@ -38,6 +39,9 @@ public class AuthService implements UserDetailsService {
     CandidateRepository candidateRepository;
 
     @Autowired
+    PollRepository pollRepository;
+
+    @Autowired
     TokenProvider tokenProvider;
 
     UserRole role;
@@ -53,6 +57,11 @@ public class AuthService implements UserDetailsService {
         Admin admin = adminRepository.findByEmail(username);
         if (admin != null) {
             return (UserDetails) admin;
+        }
+
+        Candidate candidate=candidateRepository.findByEmail(username);
+        if(candidate!=null){
+            return(UserDetails) candidate;
         }
 
         throw new UsernameNotFoundException("User not found with email: " + username);
@@ -101,38 +110,50 @@ public class AuthService implements UserDetailsService {
     }
 
 
-//    public ResponseDTO signUpTutor(TutorDTO tutorDTO) throws InvalidJwtException{
-//
-//        if (!tokenProvider.emailValidation(tutorDTO.getEmail())) {
-//            throw new InvalidJwtException("Email is not in the correct format");
-//        }
-//        if (!tokenProvider.passwordValidation(tutorDTO.getPassword())) {
-//            throw new InvalidJwtException("Password is not valid");
-//        }
-//
-//        if (adminRepository.existsByEmail(tutorDTO.getEmail()) || candidateRepository.existsByEmail(tutorDTO.getEmail()) || userRepository.existsByEmail(tutorDTO.getEmail())) {
-//            throw new InvalidJwtException("This tutor Email already exists");
-//        }
-//
-//        String encryptedPassword = new BCryptPasswordEncoder().encode(tutorDTO.getPassword());
-//        Tutor tutor=new Tutor();
-//        tutor.setEmail(tutorDTO.getEmail());
-//        tutor.setPassword(encryptedPassword);
-//        tutor.setRole(UserRole .TUTOR);
-//        tutor.setAddress(tutorDTO.getAddress());
-//        tutor.setName(tutorDTO.getName());
-//
-//        tutor.setSubject(subjectRepository.findById(tutorDTO.getSubject()).orElse(null));
-//        tutor.setSchool(schoolRepository.findById(tutorDTO.getSchoolId()).orElseThrow(null));
-//
-//
-//        return ResponseDTO.builder()
-//                .message(Constants.CREATED)
-//                .data(tutorRepository.save(tutor))
-//                .statusCode(200)
-//                .build();
-//
-//    }
+    public ResponseDTO signUpCandidate(CandidateDTO candidateDTO) throws InvalidJwtException{
+
+       try {
+           if (!tokenProvider.emailValidation(candidateDTO.getEmail())) {
+               throw new InvalidJwtException("Email is not in the correct format");
+           }
+           if (!tokenProvider.passwordValidation(candidateDTO.getPassword())) {
+               throw new InvalidJwtException("Password is not valid");
+           }
+
+           if (adminRepository.existsByEmail(candidateDTO.getEmail()) || candidateRepository.existsByEmail(candidateDTO.getEmail()) || userRepository.existsByEmail(candidateDTO.getEmail())) {
+               throw new InvalidJwtException("This Candidate Email already exists");
+
+           }
+
+           // Fetch the Poll entity by its ID
+           Poll poll = pollRepository.findById(candidateDTO.getPollId())
+                   .orElseThrow(() -> new InvalidJwtException("Poll not found"));
+
+
+           String encryptedPassword = new BCryptPasswordEncoder().encode(candidateDTO.getPassword());
+           Candidate candidate = new Candidate();
+           candidate.setEmail(candidateDTO.getEmail());
+           candidate.setPassword(encryptedPassword);
+           candidate.setUsername(candidateDTO.getUsername());
+           candidate.setGender(candidateDTO.getGender());
+           candidate.setPoll(poll);
+           candidate.setRole(UserRole.CANDIDATE);
+
+           return ResponseDTO.builder()
+                   .message(Constants.CREATED)
+                   .data(candidateRepository.save(candidate))
+                   .statusCode(200)
+                   .build();
+       }
+       catch (Exception e) {
+           e.printStackTrace(); // Log the exception
+           return ResponseDTO.builder()
+                   .message("An unexpected error occurred: " + e.getMessage())
+                   .statusCode(500)
+                   .build();
+       }
+
+    }
 
 
 
@@ -172,4 +193,6 @@ public class AuthService implements UserDetailsService {
 
 
 }
+
+
 

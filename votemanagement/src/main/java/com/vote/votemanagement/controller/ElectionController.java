@@ -7,40 +7,33 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/elections")
+@RequestMapping("/api/v1/elections")
 public class ElectionController {
 
     @Autowired
     private ElectionService electionService;
+
+    // Get all elections
+    @GetMapping
+    public List<Election> getAllElections() {
+        return electionService.getAllElections();
+    }
+
+    // Get election by ID
+    @GetMapping("/{id}")
+    public ResponseEntity<Election> getElectionById(@PathVariable Long id) {
+        Optional<Election> election = electionService.getElectionById(id);
+        return election.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
+    }
 
     // Create a new election
     @PostMapping
     public ResponseEntity<Election> createElection(@RequestBody Election election) {
         Election createdElection = electionService.createElection(election);
         return ResponseEntity.ok(createdElection);
-    }
-
-    // Get all elections
-    @GetMapping
-    public ResponseEntity<List<Election>> getAllElections() {
-        List<Election> elections = electionService.getAllElections();
-        return ResponseEntity.ok(elections);
-    }
-
-    // Get election by ID
-    @GetMapping("/{id}")
-    public ResponseEntity<Election> getElectionById(@PathVariable Long id) {
-        Election election = electionService.getElectionById(id);
-        return ResponseEntity.ok(election);
-    }
-
-    // Update election by ID
-    @PutMapping("/{id}")
-    public ResponseEntity<Election> updateElection(@PathVariable Long id, @RequestBody Election election) {
-        Election updatedElection = electionService.updateElection(id, election);
-        return ResponseEntity.ok(updatedElection);
     }
 
     // Delete election by ID
