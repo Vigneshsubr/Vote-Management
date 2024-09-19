@@ -2,6 +2,8 @@ package com.vote.votemanagement.service;
 
 import com.vote.votemanagement.entity.Poll;
 import com.vote.votemanagement.entity.Election;
+import com.vote.votemanagement.exception.PollNotFoundException;
+import com.vote.votemanagement.exception.ElectionNotFoundException;
 import com.vote.votemanagement.repository.PollRepository;
 import com.vote.votemanagement.repository.ElectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +28,17 @@ public class PollService {
 
     // Retrieve poll by ID
     public Optional<Poll> getPollById(Long id) {
-        return pollRepository.findById(id);
+        Optional<Poll> poll = pollRepository.findById(id);
+        if (poll.isEmpty()) {
+            throw new PollNotFoundException("Poll with ID " + id + " not found");
+        }
+        return poll;
     }
 
     // Create a new poll
     public Poll createPoll(Poll poll, Long electionId) {
         Election election = electionRepository.findById(electionId)
-                .orElseThrow(() -> new RuntimeException("Election not found with ID: " + electionId));
+                .orElseThrow(() -> new ElectionNotFoundException("Election not found with ID: " + electionId));
 
         // Set the election to the poll
         poll.setElection(election);
@@ -43,6 +49,9 @@ public class PollService {
 
     // Delete poll by ID
     public void deletePoll(Long id) {
+        Poll poll = pollRepository.findById(id)
+                .orElseThrow(() -> new PollNotFoundException("Poll with ID " + id + " not found"));
+
         pollRepository.deleteById(id);
     }
 }

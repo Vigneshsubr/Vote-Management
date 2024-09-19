@@ -9,5 +9,7 @@ public interface ResultRepository extends JpaRepository<Result,Long> {
     // Custom method to count total votes for a specific poll
     long countByPollId(Long pollId);
 
+    boolean existsByPollId(Long pollId);
+
 
 }

@@ -179,8 +179,9 @@ public class AuthService implements UserDetailsService {
         Admin admin=new Admin();
         admin.setEmail(adminDTO.getEmail());
         admin.setPassword(encryptedPassword);
-        admin.setRole(UserRole .ADMIN);
-        admin.setUsername(adminDTO.getName());
+        admin.setRole(UserRole .ADMIN );
+        admin.setUsername(adminDTO.getUsername()
+        );
 
 
 

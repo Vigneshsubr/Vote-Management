@@ -40,6 +40,7 @@ public class AuthConfig {
                         .requestMatchers("/api/v1/candidates/**").hasAnyAuthority("ADMIN","CANDIDATE")
                         .requestMatchers("/api/v1/votes/**").hasAnyAuthority("ADMIN","VOTER","CANDIDATE")
                         .requestMatchers("/api/v1/results/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                         .anyRequest().authenticated())
 

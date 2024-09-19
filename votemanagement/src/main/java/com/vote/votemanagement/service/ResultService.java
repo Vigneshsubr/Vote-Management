@@ -35,6 +35,12 @@ public class ResultService {
 
     // Method to calculate results for a specific poll
     public List<ResultDto> calculatePollResults(Long pollId) throws CustomException {
+        // Check if results for this poll have already been calculated
+        boolean isResultAlreadyCalculated = resultRepository.existsByPollId(pollId);
+        if (isResultAlreadyCalculated) {
+            throw new CustomException("Poll results have already been calculated.");
+        }
+
         Poll poll = pollRepository.findById(pollId)
                 .orElseThrow(() -> new CustomException("Poll not found"));
 
@@ -42,7 +48,7 @@ public class ResultService {
         long totalVotes = voteRepository.countByPollId(pollId);
 
         if (totalVotes == 0) {
-            throw new CustomException("No votes found for this poll");
+            throw new CustomException("No votes found for this poll.");
         }
 
         List<ResultDto> pollResults = new ArrayList<>();
@@ -58,8 +64,10 @@ public class ResultService {
             result.setVotePercentage(votePercentage);
             result.setCalculatedAt(LocalDateTime.now());
 
+            // Save result for each candidate
             resultRepository.save(result);
 
+            // Prepare result DTO
             ResultDto resultDto = new ResultDto();
             resultDto.setPollId(poll.getId());
             resultDto.setCandidateId(candidate.getId());

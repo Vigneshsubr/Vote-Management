@@ -2,6 +2,8 @@ package com.vote.votemanagement.service;
 
 import com.vote.votemanagement.entity.Candidate;
 import com.vote.votemanagement.entity.Poll;
+import com.vote.votemanagement.exception.CandidateNotFoundException;
+import com.vote.votemanagement.exception.PollNotFoundException;
 import com.vote.votemanagement.repository.CandidateRepository;
 import com.vote.votemanagement.repository.PollRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,13 +28,17 @@ public class CandidateService {
 
     // Get candidate by ID
     public Optional<Candidate> getCandidateById(Long id) {
-        return candidateRepository.findById(id);
+        Optional<Candidate> candidate = candidateRepository.findById(id);
+        if (candidate.isEmpty()) {
+            throw new CandidateNotFoundException("Candidate with ID " + id + " not found");
+        }
+        return candidate;
     }
 
     // Create a new candidate
     public Candidate createCandidate(Candidate candidate, Long pollId) {
         Poll poll = pollRepository.findById(pollId)
-                .orElseThrow(() -> new RuntimeException("Poll not found with ID: " + pollId));
+                .orElseThrow(() -> new PollNotFoundException("Poll not found with ID: " + pollId));
 
         // Set the poll for the candidate
         candidate.setPoll(poll);
@@ -43,6 +49,9 @@ public class CandidateService {
 
     // Delete a candidate by ID
     public void deleteCandidate(Long id) {
+        Candidate candidate = candidateRepository.findById(id)
+                .orElseThrow(() -> new CandidateNotFoundException("Candidate with ID " + id + " not found"));
+
         candidateRepository.deleteById(id);
     }
 }

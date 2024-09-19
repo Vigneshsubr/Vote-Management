@@ -28,18 +28,19 @@ public class VoteService {
     @Autowired
     private PollRepository pollRepository;
 
+    // Create a new vote
     public VoteDTO createVote(VoteDTO voteDTO) {
         // Ensure Candidate, User, and Poll exist
         Candidate candidate = candidateRepository.findById(voteDTO.getCandidateId())
-                .orElseThrow(() -> new InvalidVoteException("Candidate not found"));
+                .orElseThrow(() -> new InvalidVoteException("Candidate not found with ID: " + voteDTO.getCandidateId()));
         User user = userRepository.findById(voteDTO.getUserId())
-                .orElseThrow(() -> new InvalidVoteException("User not found"));
+                .orElseThrow(() -> new InvalidVoteException("User not found with ID: " + voteDTO.getUserId()));
         Poll poll = pollRepository.findById(voteDTO.getPollId())
-                .orElseThrow(() -> new InvalidVoteException("Poll not found"));
+                .orElseThrow(() -> new InvalidVoteException("Poll not found with ID: " + voteDTO.getPollId()));
 
-        // Check for existing vote
+        // Check if a vote already exists for this user in this poll for the given candidate
         if (voteRepository.existsByCandidateAndUserAndPoll(candidate, user, poll)) {
-            throw new InvalidVoteException("Duplicate vote is not allowed");
+            throw new InvalidVoteException("Duplicate vote is not allowed for user ID: " + voteDTO.getUserId());
         }
 
         // Create and save vote
@@ -51,22 +52,23 @@ public class VoteService {
         return convertToDTO(voteRepository.save(vote));
     }
 
+    // Retrieve vote by ID
     public VoteDTO getVoteById(Long id) {
         Vote vote = voteRepository.findById(id)
-                .orElseThrow(() -> new InvalidVoteException("Vote not found"));
+                .orElseThrow(() -> new InvalidVoteException("Vote not found with ID: " + id));
         return convertToDTO(vote);
     }
 
+    // Delete vote by ID
     public void deleteVote(Long id) {
         if (!voteRepository.existsById(id)) {
-            throw new InvalidVoteException("Vote not found");
+            throw new InvalidVoteException("Vote not found with ID: " + id);
         }
         voteRepository.deleteById(id);
     }
 
+    // Convert Vote entity to VoteDTO
     private VoteDTO convertToDTO(Vote vote) {
-        // Convert Vote entity to VoteDTO
-        // Implement your DTO conversion logic here
         return new VoteDTO(vote.getId(), vote.getCandidate().getId(), vote.getUser().getId(), vote.getPoll().getId());
     }
 }
