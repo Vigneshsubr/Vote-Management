@@ -2,8 +2,11 @@ package com.vote.votemanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -18,6 +21,12 @@ public class Election {
 
     private LocalDate startDate; // New field for start date
     private LocalDate endDate;   // New field for end date
+
+    @CreationTimestamp
+    private Date createdAt;
+
+    @UpdateTimestamp
+    private Date updatedAt;
 
     // Constructors
     public Election() {}

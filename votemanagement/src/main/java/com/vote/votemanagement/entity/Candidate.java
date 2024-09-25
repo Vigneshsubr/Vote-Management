@@ -3,17 +3,20 @@ package com.vote.votemanagement.entity;
 import com.vote.votemanagement.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Data
 @Entity
-@Table(name = "candidates", uniqueConstraints = {
+@Table(name = "candidate", uniqueConstraints = {
         @UniqueConstraint(columnNames = { "email"})
 })
 public class Candidate implements UserDetails {
@@ -40,6 +43,12 @@ public class Candidate implements UserDetails {
     @ManyToOne
     @JoinColumn(name = "poll_id")
     private Poll poll;
+
+    @CreationTimestamp
+    private Date createdAt;
+
+    @UpdateTimestamp
+    private Date updatedAt;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -2,11 +2,14 @@ package com.vote.votemanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
-@Table(name = "results")
+@Table(name = "result")
 @Data
 public class Result {
 
@@ -27,4 +30,10 @@ public class Result {
 
     // Optionally you could add a timestamp for when the result was calculated
     private LocalDateTime calculatedAt;
+
+    @CreationTimestamp
+    private Date createdAt;
+
+    @UpdateTimestamp
+    private Date updatedAt;
 }

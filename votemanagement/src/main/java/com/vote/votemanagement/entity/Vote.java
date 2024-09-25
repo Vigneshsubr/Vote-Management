@@ -2,10 +2,14 @@ package com.vote.votemanagement.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
+import java.util.Date;
 
 
 @Entity
-@Table(name = "votes")
+@Table(name = "vote")
 @Data
 public class Vote {
     @Id
@@ -24,4 +28,10 @@ public class Vote {
     @ManyToOne
     @JoinColumn(name = "poll_id", nullable = false)
     private Poll poll;  // Add this field to map the Poll entity
+
+    @CreationTimestamp
+    private Date createdAt;
+
+    @UpdateTimestamp
+    private Date updatedAt;
 }
