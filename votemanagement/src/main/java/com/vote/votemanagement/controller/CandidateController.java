@@ -1,5 +1,6 @@
 package com.vote.votemanagement.controller;
 
+import com.vote.votemanagement.dto.CandidateDTO;
 import com.vote.votemanagement.entity.Candidate;
 import com.vote.votemanagement.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,10 +30,16 @@ public class CandidateController {
         return candidate.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-    // Create a new candidate
+//    // Create a new candidate
+//    @PostMapping
+//    public ResponseEntity<Candidate> createCandidate(@RequestBody Candidate candidateRequest, @RequestParam Long pollId) {
+//        Candidate createdCandidate = candidateService.createCandidate(candidateRequest, pollId);
+//        return ResponseEntity.ok(createdCandidate);
+//    }
+
     @PostMapping
-    public ResponseEntity<Candidate> createCandidate(@RequestBody Candidate candidateRequest, @RequestParam Long pollId) {
-        Candidate createdCandidate = candidateService.createCandidate(candidateRequest, pollId);
+    public ResponseEntity<Candidate> createCandidate(@RequestBody CandidateDTO candidateDTO) {
+        Candidate createdCandidate = candidateService.createCandidate(candidateDTO);
         return ResponseEntity.ok(createdCandidate);
     }
 

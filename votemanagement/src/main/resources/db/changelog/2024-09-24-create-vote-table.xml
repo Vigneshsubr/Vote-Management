@@ -7,7 +7,7 @@
 
     <changeSet id="2024-09-24-create-vote-table" author="Vignesh">
         <createTable tableName="vote">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
             <column name="candidate_id" type="bigint">

@@ -4,27 +4,25 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <!-- Include election table changelog -->
+    <!-- Ensure the election table is created first if required -->
     <include file="db/changelog/2024-09-24-create-election-table.xml"/>
+
+    <!-- Create the poll table before the candidate table -->
+    <include file="db/changelog/2024-09-24-create-poll-table.xml"/>
+
+    <!-- Include candidate table changelog (after poll) -->
+    <include file="db/changelog/2024-09-30-create-candidate-table.xml"/>
 
     <!-- Include users table changelog -->
     <include file="db/changelog/2024-09-24-create-users-table.xml"/>
 
-    <!-- Include candidate table changelog -->
-    <include file="db/changelog/2024-09-24-create-candidate-table.xml"/>
-
     <!-- Include admin table changelog -->
     <include file="db/changelog/2024-09-24-create-admins-table.xml"/>
-
-    <!-- Include poll table changelog -->
-    <include file="db/changelog/2024-09-24-create-poll-table.xml"/>
 
     <!-- Include result table changelog -->
     <include file="db/changelog/2024-09-24-create-result-table.xml"/>
 
     <!-- Include vote table changelog -->
     <include file="db/changelog/2024-09-24-create-vote-table.xml"/>
-
-
 
 </databaseChangeLog>

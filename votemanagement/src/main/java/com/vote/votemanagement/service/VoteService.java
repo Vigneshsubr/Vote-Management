@@ -10,6 +10,7 @@ import com.vote.votemanagement.repository.CandidateRepository;
 import com.vote.votemanagement.repository.PollRepository;
 import com.vote.votemanagement.repository.UserRepository;
 import com.vote.votemanagement.repository.VoteRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,7 @@ public class VoteService {
     private PollRepository pollRepository;
 
     // Create a new vote
+    @Transactional
     public VoteDTO createVote(VoteDTO voteDTO) {
         // Ensure Candidate, User, and Poll exist
         Candidate candidate = candidateRepository.findById(voteDTO.getCandidateId())
@@ -48,6 +50,8 @@ public class VoteService {
         vote.setCandidate(candidate);
         vote.setUser(user);
         vote.setPoll(poll);
+
+        System.out.println("Vote before saving: " + vote); // Debugging
 
         return convertToDTO(voteRepository.save(vote));
     }
