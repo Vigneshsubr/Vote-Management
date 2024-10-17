@@ -27,7 +27,7 @@ public class User implements UserDetails {
 
 
     @Column(unique = true)
-    private String username;
+    private String name;
 
 
     @Email
@@ -37,9 +37,19 @@ public class User implements UserDetails {
 
     private String password;
 
-    @Enumerated(EnumType.STRING)
+    private String gender;
 
+    private String address;
+
+    private int age;
+
+    @Enumerated(EnumType.STRING)
     private UserRole role; // Use enum for role
+
+    @Lob
+    @Column(name = "profile_Image", length = 1024)
+// This annotation indicates that this is a large object (LOB)
+    private byte[] profileImage;  // Store image as byte array
 
     @CreationTimestamp
     private Date createdAt;
@@ -60,6 +70,8 @@ public class User implements UserDetails {
         // TODO Auto-generated method stub
         return email;
     }
+
+
 
     @Override
     public boolean isAccountNonExpired() {

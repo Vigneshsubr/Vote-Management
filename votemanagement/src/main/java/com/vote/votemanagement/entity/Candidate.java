@@ -26,7 +26,7 @@ public class Candidate implements UserDetails {
     private Long id;
 
     @Column(nullable = false)
-    private String username;
+    private String name;
 
     @Column
     private String email;
@@ -36,6 +36,10 @@ public class Candidate implements UserDetails {
 
     @Column
     private String gender;
+
+    private String address;
+
+    private  int age;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;

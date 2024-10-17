@@ -32,14 +32,15 @@ public class AuthConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/v1/auth/**").permitAll()
-                        .requestMatchers("/api/v1/users/**").hasAnyAuthority("VOTER", "ADMIN")
-                        .requestMatchers("/api/v1/elections/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/polls/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/admins/**").hasAuthority("ADMIN")
-                        .requestMatchers("/api/v1/candidates/**").hasAnyAuthority("ADMIN","CANDIDATE")
-                        .requestMatchers("/api/v1/votes/**").hasAnyAuthority("ADMIN","VOTER","CANDIDATE")
-                        .requestMatchers("/api/v1/results/**").hasAnyAuthority("ADMIN")
+                        .requestMatchers("/api/v1/**").permitAll()
+//                        .requestMatchers("/api/v1/auth/**").permitAll()
+//                        .requestMatchers("/api/v1/users/**").hasAnyAuthority("VOTER", "ADMIN")
+//                        .requestMatchers("/api/v1/elections/**").hasAuthority("ADMIN")
+//                        .requestMatchers("/api/v1/polls/**").hasAuthority("ADMIN")
+//                        .requestMatchers("/api/v1/admins/**").hasAuthority("ADMIN")
+//                        .requestMatchers("/api/v1/candidates/**").hasAnyAuthority("ADMIN","CANDIDATE")
+//                        .requestMatchers("/api/v1/votes/**").hasAnyAuthority("ADMIN","VOTER","CANDIDATE")
+//                        .requestMatchers("/api/v1/results/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                         .anyRequest().authenticated())

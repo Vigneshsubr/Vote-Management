@@ -1,7 +1,9 @@
 package com.vote.votemanagement.controller;
 
 import com.vote.votemanagement.dto.CandidateDTO;
+import com.vote.votemanagement.dto.ResponseDTO;
 import com.vote.votemanagement.entity.Candidate;
+import com.vote.votemanagement.exception.InvalidJwtException;
 import com.vote.votemanagement.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -48,5 +50,14 @@ public class CandidateController {
     public ResponseEntity<Void> deleteCandidate(@PathVariable Long id) {
         candidateService.deleteCandidate(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseDTO updateCandidate(
+            @PathVariable Long id,
+            @RequestBody CandidateDTO candidateDTO) throws InvalidJwtException {
+
+        // Call the service method to update the candidate
+        return candidateService.updateCandidate(id, candidateDTO);
     }
 }

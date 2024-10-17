@@ -1,44 +1,49 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<databaseChangeLog-->
+<!--        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"-->
+<!--        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-->
+<!--        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">-->
 
-    <!-- Create the users table -->
-    <changeSet id="2024-09-24-create-users-table" author="Vignesh">
-        <createTable tableName="users">
-            <column name="id" type="BIGINT" autoIncrement="true">
-                <constraints primaryKey="true" nullable="false" />
-            </column>
+<!--    &lt;!&ndash; Create the users table &ndash;&gt;-->
+<!--    <changeSet id="2024-09-24-create-users-table" author="Vignesh">-->
+<!--        <createTable tableName="users">-->
+<!--            <column name="id" type="BIGINT" autoIncrement="true">-->
+<!--                <constraints primaryKey="true" nullable="false" />-->
+<!--            </column>-->
 
-            <column name="username" type="VARCHAR(255)">
-                <constraints unique="true" nullable="false"/>
-            </column>
+<!--            <column name="name" type="VARCHAR(255)">-->
+<!--                <constraints unique="true" nullable="false"/>-->
+<!--            </column>-->
 
-            <column name="email" type="VARCHAR(255)">
-                <constraints unique="true" nullable="false"/>
-            </column>
+<!--            <column name="email" type="VARCHAR(255)">-->
+<!--                <constraints unique="true" nullable="false"/>-->
+<!--            </column>-->
 
-            <column name="password" type="VARCHAR(255)">
-                <constraints nullable="false"/>
-            </column>
+<!--            <column name="password" type="VARCHAR(255)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
 
-            <column name="role" type="VARCHAR(50)">
-                <constraints nullable="false"/>
-            </column>
+<!--            <column name="role" type="VARCHAR(50)">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
 
-            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
+<!--            &lt;!&ndash; Add the image column &ndash;&gt;-->
+<!--            <column name="profile_Image" type="BLOB">-->
+<!--                <constraints nullable="true"/>-->
+<!--            </column>-->
 
-            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
+<!--            <column name="created_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
 
-        <!-- Add unique constraint on email column -->
-        <addUniqueConstraint columnNames="email" tableName="users"/>
+<!--            <column name="updated_at" type="TIMESTAMP" defaultValueComputed="CURRENT_TIMESTAMP">-->
+<!--                <constraints nullable="false"/>-->
+<!--            </column>-->
+<!--        </createTable>-->
 
-    </changeSet>
-</databaseChangeLog>
+<!--        &lt;!&ndash; Add unique constraint on email column &ndash;&gt;-->
+<!--        <addUniqueConstraint columnNames="email" tableName="users"/>-->
+
+<!--    </changeSet>-->
+<!--</databaseChangeLog>-->

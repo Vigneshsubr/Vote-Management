@@ -3,9 +3,14 @@ package com.vote.votemanagement.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+import java.util.List;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
@@ -19,4 +24,10 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowCredentials(true)  // Allow credentials like cookies
                 .maxAge(3600);  // Max age for the CORS preflight requests
     }
+
+//    @Override
+//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
+//        converters.add(new ByteArrayHttpMessageConverter());
+//        converters.add(new MappingJackson2HttpMessageConverter());
+//    }
 }

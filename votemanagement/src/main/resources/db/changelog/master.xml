@@ -1,28 +1,28 @@
-<databaseChangeLog
-        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
-        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+<!--<databaseChangeLog-->
+<!--        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"-->
+<!--        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-->
+<!--        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">-->
 
-    <!-- Ensure the election table is created first if required -->
-    <include file="db/changelog/2024-09-24-create-election-table.xml"/>
+<!--    &lt;!&ndash; Ensure the election table is created first if required &ndash;&gt;-->
+<!--    <include file="db/changelog/2024-09-24-create-election-table.xml"/>-->
 
-    <!-- Create the poll table before the candidate table -->
-    <include file="db/changelog/2024-09-24-create-poll-table.xml"/>
+<!--    &lt;!&ndash; Create the poll table before the candidate table &ndash;&gt;-->
+<!--    <include file="db/changelog/2024-09-24-create-poll-table.xml"/>-->
 
-    <!-- Include candidate table changelog (after poll) -->
-    <include file="db/changelog/2024-09-30-create-candidate-table.xml"/>
+<!--    &lt;!&ndash; Include candidate table changelog (after poll) &ndash;&gt;-->
+<!--    <include file="db/changelog/2024-09-30-create-candidate-table.xml"/>-->
 
-    <!-- Include users table changelog -->
-    <include file="db/changelog/2024-09-24-create-users-table.xml"/>
+<!--    &lt;!&ndash; Include users table changelog &ndash;&gt;-->
+<!--    <include file="db/changelog/2024-09-24-create-users-table.xml"/>-->
 
-    <!-- Include admin table changelog -->
-    <include file="db/changelog/2024-09-24-create-admins-table.xml"/>
+<!--    &lt;!&ndash; Include admin table changelog &ndash;&gt;-->
+<!--    <include file="db/changelog/2024-09-24-create-admins-table.xml"/>-->
 
-    <!-- Include result table changelog -->
-    <include file="db/changelog/2024-09-24-create-result-table.xml"/>
+<!--    &lt;!&ndash; Include result table changelog &ndash;&gt;-->
+<!--    <include file="db/changelog/2024-09-24-create-result-table.xml"/>-->
 
-    <!-- Include vote table changelog -->
-    <include file="db/changelog/2024-09-24-create-vote-table.xml"/>
+<!--    &lt;!&ndash; Include vote table changelog &ndash;&gt;-->
+<!--    <include file="db/changelog/2024-09-24-create-vote-table.xml"/>-->
 
-</databaseChangeLog>
+<!--</databaseChangeLog>-->

@@ -35,7 +35,7 @@ public class AdminService {
         Admin admin = adminRepository.findById(id)
                 .orElseThrow(() -> new AdminNotFoundException("Admin with ID " + id + " not found"));
 
-        admin.setUsername(adminDetails.getUsername());
+        admin.setName(adminDetails.getName());
         admin.setEmail(adminDetails.getEmail());
         return adminRepository.save(admin);
     }

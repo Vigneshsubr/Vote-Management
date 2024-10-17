@@ -46,31 +46,31 @@ public class AuthController {
     UserRepository userRepository;
 
 
-    @PostMapping("/sign-up/user")
-    public ResponseDTO signUpStudent(@RequestBody UserDto userDto) throws InvalidJwtException {
-
-        return authService.signUpUser(userDto);
-    }
-
-//    @PostMapping("/sign-up/tutor")
-//    public ResponseDTO signUpTutor(@RequestBody TutorDTO tutorDTO) throws InvalidJwtException {
+//    @PostMapping("/sign-up/user")
+//    public ResponseDTO signUpStudent(@RequestBody UserDto userDto) throws InvalidJwtException {
 //
-//        return authService.signUpTutor(tutorDTO);
+//        return authService.signUpUser(userDto);
 //    }
-
-
-    @PostMapping("sign-up/admin")
-    public ResponseDTO signUpAdmin(@RequestBody AdminDTO adminDTO)throws InvalidJwtException{
-        return authService.signUpAdmin(adminDTO);
-    }
-
-    @PostMapping("sign-up/candidate")
-    public ResponseDTO signUpCandidate(@RequestBody CandidateDTO candidateDTO)throws InvalidJwtException{
-        if (candidateDTO.getPollId() == null) {
-            throw new InvalidJwtException("Poll ID must not be null");
-        }
-        return authService.signUpCandidate(candidateDTO);
-    }
+//
+////    @PostMapping("/sign-up/tutor")
+////    public ResponseDTO signUpTutor(@RequestBody TutorDTO tutorDTO) throws InvalidJwtException {
+////
+////        return authService.signUpTutor(tutorDTO);
+////    }
+//
+//
+//    @PostMapping("sign-up/admin")
+//    public ResponseDTO signUpAdmin(@RequestBody AdminDTO adminDTO)throws InvalidJwtException{
+//        return authService.signUpAdmin(adminDTO);
+//    }
+//
+//    @PostMapping("sign-up/candidate")
+//    public ResponseDTO signUpCandidate(@RequestBody CandidateDTO candidateDTO)throws InvalidJwtException{
+////        if (candidateDTO.getPollId() == null) {
+////            throw new InvalidJwtException("Poll ID must not be null");
+////        }
+//        return authService.signUpCandidate(candidateDTO);
+//    }
 
     @PostMapping("/sign-in")
     public ResponseDTO signIn(@RequestBody SignInDto user) throws AuthenticationException,CustomException {
@@ -120,6 +120,7 @@ public class AuthController {
             return responseDto;
         }
         catch(Exception e) {
+            System.err.println(e.getMessage());
             ResponseDTO responseDto = new ResponseDTO();
             responseDto.setMessage("Invalid refresh token");
             responseDto.setStatusCode(401);
@@ -149,6 +150,11 @@ public class AuthController {
             responseDto.setStatusCode(401);
             return ResponseEntity.status(401).body(responseDto);
         }
+    }
+
+    @PostMapping("/sign-up")
+    public ResponseDTO signUp(@RequestBody SignUpRequest signUpRequest) throws CustomException {
+        return authService.signUp(signUpRequest);
     }
 
 }

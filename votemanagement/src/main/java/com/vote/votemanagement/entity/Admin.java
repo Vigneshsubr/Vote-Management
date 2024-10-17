@@ -26,7 +26,7 @@ public class Admin implements UserDetails {
 
     @NotBlank
     @Column(unique = true)
-    private String username;
+    private String name;
 
     @NotBlank
     @Email
@@ -39,6 +39,12 @@ public class Admin implements UserDetails {
     @Enumerated(EnumType.STRING)
     @NotBlank
     private UserRole role; // Use enum for role
+
+    private String gender;
+
+    private String address;
+
+    private int age;
 
     @CreationTimestamp
     private Date createdAt;

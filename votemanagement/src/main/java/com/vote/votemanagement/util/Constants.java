@@ -15,5 +15,6 @@ public class Constants {
     public static final String NOT_FOUND = "Data Not Found.";
     public static final String MODIFIED="Modified successfully.";
     public static final String SUBMITED="Submite successfully.";
+    public static final String UPDATED="Updated successfully";
 
 }
