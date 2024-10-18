@@ -89,4 +89,6 @@ public class GlobalExceptionHandler {
         responseDTO.setStatusCode(HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(responseDTO, HttpStatus.NOT_FOUND);
     }
+
+
 }

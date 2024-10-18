@@ -57,19 +57,19 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public User updateUser(Long id, User userDetails) throws IOException {
+    public User updateUser(Long id, String name, String email, int age, String address, String gender, MultipartFile profileImage) throws IOException {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("User with ID " + id + " not found"));
 
-        user.setName(userDetails.getName());
-        user.setEmail(userDetails.getEmail());
-        user.setPassword(passwordEncoder.encode(userDetails.getPassword()));
-        user.setAge(userDetails.getAge());
-        user.setGender(userDetails.getGender());
+        user.setName(name);
+        user.setEmail(email);
+        user.setAge(age);
+        user.setAddress(address);
+        user.setGender(gender);
 
         // Update profile image if provided
-        if (userDetails.getProfileImage() != null) {
-            user.setProfileImage(userDetails.getProfileImage());
+        if (profileImage != null && !profileImage.isEmpty()) {
+            user.setProfileImage(profileImage.getBytes());
         }
 
         return userRepository.save(user);

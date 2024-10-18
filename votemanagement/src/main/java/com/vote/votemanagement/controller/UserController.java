@@ -51,16 +51,14 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(
             @PathVariable Long id,
-            @RequestBody User userDetails) throws IOException {
-        // Log the received ID
-        System.out.println("Received ID: " + id);
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam int age,
+            @RequestParam String address,
+            @RequestParam String gender,
+            @RequestParam(required = false) MultipartFile profileImage) throws IOException {
 
-        // Validate that the ID is not null or invalid
-        if (id == null) {
-            return ResponseEntity.badRequest().body(null);
-        }
-
-        User updatedUser = userService.updateUser(id, userDetails);
+        User updatedUser = userService.updateUser(id, name, email,  age, address, gender, profileImage);
         return ResponseEntity.ok(updatedUser);
     }
 

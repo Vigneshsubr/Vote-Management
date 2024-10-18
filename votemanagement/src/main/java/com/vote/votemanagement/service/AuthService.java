@@ -214,6 +214,9 @@ public class AuthService implements UserDetailsService {
             admin.setPassword(encryptedPassword);
             admin.setRole(UserRole.ADMIN);
             admin.setName(signUpRequest.getName());
+            admin.setAge(signUpRequest.getAge());
+            admin.setAddress(signUpRequest.getAddress());
+            admin.setGender(signUpRequest.getGender());
             return ResponseDTO.builder()
                     .message(Constants.CREATED)
                     .data(adminRepository.save(admin))
@@ -225,6 +228,9 @@ public class AuthService implements UserDetailsService {
             candidate.setPassword(encryptedPassword);
             candidate.setRole(UserRole.CANDIDATE);
             candidate.setName(signUpRequest.getName());
+            candidate.setAge(signUpRequest.getAge());
+            candidate.setAddress(signUpRequest.getAddress());
+            candidate.setGender(signUpRequest.getGender());
             return ResponseDTO.builder()
                     .message(Constants.CREATED)
                     .data(candidateRepository.save(candidate))
@@ -236,6 +242,9 @@ public class AuthService implements UserDetailsService {
             user.setPassword(encryptedPassword);
             user.setRole(UserRole.VOTER);
             user.setName(signUpRequest.getName());
+            user.setAge(signUpRequest.getAge());
+            user.setAddress(signUpRequest.getAddress());
+            user.setGender(signUpRequest.getGender());
             return ResponseDTO.builder()
                     .message(Constants.CREATED)
                     .data(userRepository.save(user))

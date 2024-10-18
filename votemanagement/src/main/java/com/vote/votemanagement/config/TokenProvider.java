@@ -39,12 +39,22 @@ public class TokenProvider {
 
     public String generateAccessToken(UserDetails user) {
         try {
+
+            String username = user.getUsername();
+            String name = "";
+
+            if (user instanceof User) {
+                name = ((User) user).getName(); // Get the user's name from the User entity
+            }
+
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
-            return JWT.create().withSubject(user.getUsername()).
-                    withClaim("UserEmail", user.getUsername())
+            return JWT.create()
+                    .withSubject(user.getUsername())
+                    .withClaim("UserEmail", user.getUsername())
                     .withIssuedAt(Instant.now()) // Add issuedAt claim
-                    .withExpiresAt(genAccessExperationDate()).
-                    sign(algorithm);
+                    .withExpiresAt(genAccessExperationDate())
+                    .withClaim("Name", name) // Add the name claim here
+                    .sign(algorithm);
         } catch (JWTCreationException exception) {
             throw new JWTCreationException("Error while generating access token", exception);
         }
