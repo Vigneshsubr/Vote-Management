@@ -54,6 +54,12 @@ public class Candidate implements UserDetails {
     @UpdateTimestamp
     private Date updatedAt;
 
+    @Lob
+    @Column(name = "profile_Image", length = 3000)
+// This annotation indicates that this is a large object (LOB)
+    private byte[] profileImage;  // Store image as byte array
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
 

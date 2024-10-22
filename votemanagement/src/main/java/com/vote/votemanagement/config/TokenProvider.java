@@ -43,8 +43,13 @@ public class TokenProvider {
             String username = user.getUsername();
             String name = "";
 
-            if (user instanceof User) {
-                name = ((User) user).getName(); // Get the user's name from the User entity
+            // Check the type of the user and extract the name accordingly
+            if (user instanceof Admin) {
+                name = ((Admin) user).getName(); // Get Admin's name
+            } else if (user instanceof Candidate) {
+                name = ((Candidate) user).getName(); // Get Candidate's name
+            } else if (user instanceof User) {
+                name = ((User) user).getName(); // Get User's name
             }
 
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
