@@ -3,12 +3,16 @@ package com.vote.votemanagement.controller;
 import com.vote.votemanagement.dto.CandidateDTO;
 import com.vote.votemanagement.dto.ResponseDTO;
 import com.vote.votemanagement.entity.Candidate;
+import com.vote.votemanagement.enums.UserRole;
 import com.vote.votemanagement.exception.InvalidJwtException;
 import com.vote.votemanagement.service.CandidateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,17 +36,24 @@ public class CandidateController {
         return candidate.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-//    // Create a new candidate
-//    @PostMapping
-//    public ResponseEntity<Candidate> createCandidate(@RequestBody Candidate candidateRequest, @RequestParam Long pollId) {
-//        Candidate createdCandidate = candidateService.createCandidate(candidateRequest, pollId);
-//        return ResponseEntity.ok(createdCandidate);
-//    }
 
     @PostMapping
-    public ResponseEntity<Candidate> createCandidate(@RequestBody CandidateDTO candidateDTO) {
-        Candidate createdCandidate = candidateService.createCandidate(candidateDTO);
-        return ResponseEntity.ok(createdCandidate);
+    public ResponseEntity<Candidate> createCandidate(
+            @RequestParam("name") String name,
+            @RequestParam("email") String email,
+            @RequestParam("password") String password,
+            @RequestParam("gender") String gender,
+            @RequestParam("age") int age,
+            @RequestParam("address") String address,
+            //@RequestParam("role") UserRole role,
+            @RequestParam("pollId") Long pollId,
+            @RequestParam("profile_Image") MultipartFile profileImage
+    ) throws IOException {
+        // Use the candidateService to create the candidate
+        Candidate candidate = candidateService.createCandidate(name, email, password, gender, age, address,  pollId, profileImage);
+
+        // Return the created candidate with a 201 status
+        return ResponseEntity.status(HttpStatus.CREATED).body(candidate);
     }
 
     // Delete candidate by ID
@@ -60,4 +71,6 @@ public class CandidateController {
         // Call the service method to update the candidate
         return candidateService.updateCandidate(id, candidateDTO);
     }
+
+
 }

@@ -1,7 +1,9 @@
 package com.vote.votemanagement.controller;
 
 import com.vote.votemanagement.entity.Election;
+import com.vote.votemanagement.entity.Poll;
 import com.vote.votemanagement.service.ElectionService;
+import com.vote.votemanagement.service.PollService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,6 +18,9 @@ public class ElectionController {
     @Autowired
     private ElectionService electionService;
 
+    @Autowired
+    private PollService pollService;
+
     // Get all elections
     @GetMapping
     public List<Election> getAllElections() {
@@ -28,6 +33,14 @@ public class ElectionController {
         Optional<Election> election = electionService.getElectionById(id);
         return election.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
+
+    // Endpoint to fetch polls by election ID
+    @GetMapping("/{electionId}/polls")
+    public ResponseEntity<List<Poll>> fetchPollsByElectionId(@PathVariable Long electionId) {
+        List<Poll> polls = pollService.getPollsByElectionId(electionId);
+        return ResponseEntity.ok(polls);
+    }
+
 
     // Create a new election
     @PostMapping

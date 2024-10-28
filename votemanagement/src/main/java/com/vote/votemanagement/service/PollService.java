@@ -36,16 +36,20 @@ public class PollService {
     }
 
     // Create a new poll
-    public Poll createPoll(Poll poll, Long electionId) {
-        Election election = electionRepository.findById(electionId)
-                .orElseThrow(() -> new ElectionNotFoundException("Election not found with ID: " + electionId));
-
-        // Set the election to the poll
-        poll.setElection(election);
-
-        // Save the poll
+//    public Poll createPoll(Poll poll, Long electionId) {
+//        Election election = electionRepository.findById(electionId)
+//                .orElseThrow(() -> new ElectionNotFoundException("Election not found with ID: " + electionId));
+//
+//        // Set the election to the poll
+//        poll.setElection(election);
+//
+//        // Save the poll
+//        return pollRepository.save(poll);
+//    }
+    public Poll createPoll(Poll poll) {
         return pollRepository.save(poll);
     }
+
 
     // Delete poll by ID
     public void deletePoll(Long id) {
@@ -53,5 +57,9 @@ public class PollService {
                 .orElseThrow(() -> new PollNotFoundException("Poll with ID " + id + " not found"));
 
         pollRepository.deleteById(id);
+    }
+
+    public List<Poll> getPollsByElectionId(Long electionId) {
+        return pollRepository.findByElectionId(electionId);
     }
 }

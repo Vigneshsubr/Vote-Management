@@ -1,7 +1,9 @@
 package com.vote.votemanagement.controller;
 
-import com.vote.votemanagement.dto.VoteDTO;
+import com.vote.votemanagement.config.TokenProvider;
+import com.vote.votemanagement.dto.VoteRequest;
 import com.vote.votemanagement.service.VoteService;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,11 +14,27 @@ public class VoteController {
 
     @Autowired
     private VoteService voteService;
+    @Autowired
+    private TokenProvider tokenProvider;
 
-    @PostMapping
-    public ResponseEntity<?> createVote(@RequestBody VoteDTO voteDTO) {
-        return ResponseEntity.ok(voteService.createVote(voteDTO));
+
+    @PostMapping("/cast")
+    public ResponseEntity<String> castVote(HttpServletRequest request, @RequestBody VoteRequest voteRequest) {
+        // Retrieve the token from the Authorization header
+        String token = tokenProvider.recoverToken(request);
+        if (token == null) {
+            return ResponseEntity.status(401).body("Unauthorized: Missing token.");
+        }
+
+        // Retrieve userId from the token
+        Long userId = tokenProvider.getUserIdFromToken(token);
+
+        // Cast vote using the VoteService
+        voteService.castVote(userId, voteRequest.getPollId(), voteRequest.getCandidateId());
+
+        return ResponseEntity.ok("Vote successfully cast.");
     }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<?> getVoteById(@PathVariable Long id) {

@@ -20,4 +20,6 @@ public interface VoteRepository extends JpaRepository<Vote,Long> {
 
     // Custom method to count total votes for a specific poll
     long countByPollId(Long pollId);
+
+    boolean existsByUserIdAndPollId(Long userId, Long pollId);
 }

@@ -14,4 +14,7 @@ public interface CandidateRepository extends JpaRepository<Candidate, Long> {
     Candidate findByEmail(String email);
 
     List<Candidate> findByPollId(Long pollId);
+
+    boolean existsByIdAndPollId(Long candidateId, Long pollId);
 }
+

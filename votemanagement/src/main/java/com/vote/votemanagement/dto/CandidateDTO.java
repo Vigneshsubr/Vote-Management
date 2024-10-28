@@ -14,5 +14,6 @@ public class CandidateDTO {
     public String address;
     public int age;
     public Long pollId;
+    public byte[] profileImage;
 
 }

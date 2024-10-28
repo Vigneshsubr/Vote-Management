@@ -4,6 +4,7 @@ import com.vote.votemanagement.dto.CandidateDTO;
 import com.vote.votemanagement.dto.ResponseDTO;
 import com.vote.votemanagement.entity.Candidate;
 import com.vote.votemanagement.entity.Poll;
+import com.vote.votemanagement.enums.UserRole;
 import com.vote.votemanagement.exception.CandidateNotFoundException;
 import com.vote.votemanagement.exception.InvalidJwtException;
 import com.vote.votemanagement.exception.PollNotFoundException;
@@ -11,8 +12,11 @@ import com.vote.votemanagement.repository.CandidateRepository;
 import com.vote.votemanagement.repository.PollRepository;
 import com.vote.votemanagement.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +28,9 @@ public class CandidateService {
 
     @Autowired
     private PollRepository pollRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     // Get all candidates
     public List<Candidate> getAllCandidates() {
@@ -53,22 +60,28 @@ public class CandidateService {
 
     // CandidateService.java
 
-    public Candidate createCandidate(CandidateDTO candidateDTO) {
-        Poll poll = pollRepository.findById(candidateDTO.getPollId())
-                .orElseThrow(() -> new PollNotFoundException("Poll not found with ID: " + candidateDTO.getPollId()));
-
-        // Create a new Candidate entity from CandidateDTO
+    public Candidate createCandidate(String name, String email, String password, String gender, int age, String address,  Long pollId, MultipartFile profileImage) throws IOException, IOException {
+        // Create a new Candidate instance
         Candidate candidate = new Candidate();
-        candidate.setName(candidateDTO.getName());
-        candidate.setEmail(candidateDTO.getEmail());
-        candidate.setPassword(candidateDTO.getPassword()); // Ensure password is hashed before saving
-        candidate.setGender(candidateDTO.getGender());
-        candidate.setAge(candidateDTO.getAge());
-        candidate.setAddress(candidateDTO.getAddress());
-        candidate.setRole(candidateDTO.getRole());
+        candidate.setName(name);
+        candidate.setEmail(email);
+        candidate.setPassword(passwordEncoder.encode(password));
+        candidate.setGender(gender);
+        candidate.setAge(age);
+        candidate.setAddress(address);
+        candidate.setRole(UserRole.CANDIDATE);
+
+        // Set Poll entity reference (if available)
+        Poll poll = pollRepository.findById(pollId)
+                .orElseThrow(() -> new IllegalArgumentException("Poll not found"));
         candidate.setPoll(poll);
 
-        // Save the candidate
+        // Set profile image (if uploaded)
+        if (profileImage != null && !profileImage.isEmpty()) {
+            candidate.setProfileImage(profileImage.getBytes());
+        }
+
+        // Save the candidate entity to the database
         return candidateRepository.save(candidate);
     }
 
@@ -112,6 +125,10 @@ public class CandidateService {
                     .statusCode(500)
                     .build();
         }
+    }
+
+    public List<Candidate> getCandidatesByPollId(Long pollId) {
+        return candidateRepository.findByPollId(pollId);
     }
 
 }

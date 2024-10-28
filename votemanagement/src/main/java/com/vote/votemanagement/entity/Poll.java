@@ -15,8 +15,7 @@ public class Poll {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String question;
-
+    private String pollName;
 
     @ManyToOne
     private Election election;
@@ -30,10 +29,7 @@ public class Poll {
     // Constructors
     public Poll() {     }
 
-    public Poll(String question, Election election) {
-        this.question = question;
-        this.election = election;
-    }
+
 
 
 

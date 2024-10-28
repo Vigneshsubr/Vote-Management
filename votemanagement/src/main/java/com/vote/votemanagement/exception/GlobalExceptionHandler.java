@@ -89,6 +89,10 @@ public class GlobalExceptionHandler {
         responseDTO.setStatusCode(HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(responseDTO, HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(VoteAlreadyExistsException.class)
+    public ResponseEntity<String> handleVoteAlreadyExistsException(VoteAlreadyExistsException ex) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
 
 
 }

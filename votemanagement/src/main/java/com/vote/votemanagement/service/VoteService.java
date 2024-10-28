@@ -1,11 +1,13 @@
 package com.vote.votemanagement.service;
 
-import com.vote.votemanagement.dto.VoteDTO;
+import com.vote.votemanagement.dto.VoteRequest;
 import com.vote.votemanagement.entity.Candidate;
 import com.vote.votemanagement.entity.Poll;
 import com.vote.votemanagement.entity.User;
 import com.vote.votemanagement.entity.Vote;
+import com.vote.votemanagement.exception.CandidateNotFoundException;
 import com.vote.votemanagement.exception.InvalidVoteException;
+import com.vote.votemanagement.exception.VoteAlreadyExistsException;
 import com.vote.votemanagement.repository.CandidateRepository;
 import com.vote.votemanagement.repository.PollRepository;
 import com.vote.votemanagement.repository.UserRepository;
@@ -31,33 +33,33 @@ public class VoteService {
 
     // Create a new vote
     @Transactional
-    public VoteDTO createVote(VoteDTO voteDTO) {
-        // Ensure Candidate, User, and Poll exist
-        Candidate candidate = candidateRepository.findById(voteDTO.getCandidateId())
-                .orElseThrow(() -> new InvalidVoteException("Candidate not found with ID: " + voteDTO.getCandidateId()));
-        User user = userRepository.findById(voteDTO.getUserId())
-                .orElseThrow(() -> new InvalidVoteException("User not found with ID: " + voteDTO.getUserId()));
-        Poll poll = pollRepository.findById(voteDTO.getPollId())
-                .orElseThrow(() -> new InvalidVoteException("Poll not found with ID: " + voteDTO.getPollId()));
-
-        // Check if a vote already exists for this user in this poll for the given candidate
-        if (voteRepository.existsByCandidateAndUserAndPoll(candidate, user, poll)) {
-            throw new InvalidVoteException("Duplicate vote is not allowed for user ID: " + voteDTO.getUserId());
+    public boolean castVote(Long userId, Long pollId, Long candidateId) {
+        // Check if the user has already voted in the poll
+        if (voteRepository.existsByUserIdAndPollId(userId, pollId)) {
+            throw new VoteAlreadyExistsException("User has already voted in this poll.");
         }
 
-        // Create and save vote
+        // Retrieve entities and check existence
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new InvalidVoteException("User not found with ID: " + userId));
+        Poll poll = pollRepository.findById(pollId)
+                .orElseThrow(() -> new InvalidVoteException("Poll not found with ID: " + pollId));
+        Candidate candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new CandidateNotFoundException("Candidate not found with ID: " + candidateId));
+
+        // Create and save the new vote
         Vote vote = new Vote();
-        vote.setCandidate(candidate);
         vote.setUser(user);
         vote.setPoll(poll);
+        vote.setCandidate(candidate);
 
-        System.out.println("Vote before saving: " + vote); // Debugging
-
-        return convertToDTO(voteRepository.save(vote));
+        voteRepository.save(vote);
+        return true;
     }
 
+
     // Retrieve vote by ID
-    public VoteDTO getVoteById(Long id) {
+    public VoteRequest getVoteById(Long id) {
         Vote vote = voteRepository.findById(id)
                 .orElseThrow(() -> new InvalidVoteException("Vote not found with ID: " + id));
         return convertToDTO(vote);
@@ -72,7 +74,7 @@ public class VoteService {
     }
 
     // Convert Vote entity to VoteDTO
-    private VoteDTO convertToDTO(Vote vote) {
-        return new VoteDTO(vote.getId(), vote.getCandidate().getId(), vote.getUser().getId(), vote.getPoll().getId());
+    private VoteRequest convertToDTO(Vote vote) {
+        return new VoteRequest(vote.getId(), vote.getCandidate().getId(), vote.getUser().getId(), vote.getPoll().getId());
     }
 }

@@ -47,7 +47,7 @@ public class User implements UserDetails {
     private UserRole role; // Use enum for role
 
     @Lob
-    @Column(name = "profile_Image", length = 3000)
+    @Column(name = "profile_Image", length = 500000)
 // This annotation indicates that this is a large object (LOB)
     private byte[] profileImage;  // Store image as byte array
 
