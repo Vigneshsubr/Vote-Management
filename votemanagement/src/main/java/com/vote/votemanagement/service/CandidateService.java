@@ -41,7 +41,7 @@ public class CandidateService {
     public Optional<Candidate> getCandidateById(Long id) {
         Optional<Candidate> candidate = candidateRepository.findById(id);
         if (candidate.isEmpty()) {
-            throw new CandidateNotFoundException("Candidate with ID " + id + " not found");
+            throw new CandidateNotFoundException(" Candidate with ID " + id + " not found");
         }
         return candidate;
     }
@@ -73,7 +73,7 @@ public class CandidateService {
 
         // Set Poll entity reference (if available)
         Poll poll = pollRepository.findById(pollId)
-                .orElseThrow(() -> new IllegalArgumentException("Poll not found"));
+                .orElseThrow(() -> new IllegalArgumentException(" Poll not found"));
         candidate.setPoll(poll);
 
         // Set profile image (if uploaded)
@@ -99,7 +99,7 @@ public class CandidateService {
         try {
             // Fetch the candidate by ID
             Candidate candidate = candidateRepository.findById(candidateId)
-                    .orElseThrow(() -> new InvalidJwtException("Candidate not found"));
+                    .orElseThrow(() -> new InvalidJwtException(" Candidate not found"));
 
             // Update candidate details if provided (e.g., email, username, etc.)
             candidate.setName(candidateDTO.getName());
@@ -108,7 +108,7 @@ public class CandidateService {
             // Check if pollId is provided for updating the poll
             if (candidateDTO.getPollId() != null) {
                 Poll poll = pollRepository.findById(candidateDTO.getPollId())
-                        .orElseThrow(() -> new PollNotFoundException("Poll not found with this id"));
+                        .orElseThrow(() -> new PollNotFoundException(" Poll not found with this id"));
                 candidate.setPoll(poll); // Associate poll with candidate
             }
 
@@ -121,7 +121,7 @@ public class CandidateService {
         } catch (Exception e) {
             e.printStackTrace(); // Log the exception
             return ResponseDTO.builder()
-                    .message("An unexpected error occurred: " + e.getMessage())
+                    .message(" An unexpected error occurred: " + e.getMessage())
                     .statusCode(500)
                     .build();
         }
