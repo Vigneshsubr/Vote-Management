@@ -253,6 +253,13 @@ public class AuthService implements UserDetailsService {
         }
     }
 
+    public SignoutResponseDto signOut(String token) {
+        // Optionally, add token to a blocklist or similar invalidation mechanism
+        // For example, cache the token in Redis with expiry
+
+        return new SignoutResponseDto("Successfully signed out");
+    }
+
 
 }
 

@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/votes")
 public class VoteController {
@@ -17,22 +19,22 @@ public class VoteController {
     @Autowired
     private TokenProvider tokenProvider;
 
-
     @PostMapping("/cast")
-    public ResponseEntity<String> castVote(HttpServletRequest request, @RequestBody VoteRequest voteRequest) {
-        // Retrieve the token from the Authorization header
+    public ResponseEntity<Map<String, String>> castVote(HttpServletRequest request, @RequestBody VoteRequest voteRequest) {
         String token = tokenProvider.recoverToken(request);
         if (token == null) {
-            return ResponseEntity.status(401).body("Unauthorized: Missing token.");
+            return ResponseEntity.status(401).body(Map.of("error", "Unauthorized: Missing token."));
         }
 
-        // Retrieve userId from the token
-        Long userId = tokenProvider.getUserIdFromToken(token);
+        String userIdString = String.valueOf(tokenProvider.getUserIdFromToken(token));
+        if (!userIdString.matches("\\d+")) {
+            return ResponseEntity.status(400).body(Map.of("error", "Invalid user ID format in token."));
+        }
 
-        // Cast vote using the VoteService
-        voteService.castVote(userId, voteRequest.getPollId(), voteRequest.getCandidateId());
+        Long userId = Long.parseLong(userIdString);
+        voteService.castVote(userId, voteRequest.getPollId(), voteRequest.getCandidateId(), voteRequest.getElectionId());
 
-        return ResponseEntity.ok("Vote successfully cast.");
+        return ResponseEntity.ok(Map.of("message", "Vote successfully cast."));
     }
 
 

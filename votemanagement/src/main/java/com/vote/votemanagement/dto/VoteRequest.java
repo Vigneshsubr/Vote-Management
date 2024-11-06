@@ -12,4 +12,5 @@ public class VoteRequest {
     private Long candidateId;
     private Long userId;       // Added this field for User ID
     private Long pollId;
+    private Long electionId;
 }

@@ -63,14 +63,23 @@ public class CandidateController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseDTO updateCandidate(
+    @PutMapping("/{id}")
+    public ResponseEntity<Candidate> updateCandidate(
             @PathVariable Long id,
-            @RequestBody CandidateDTO candidateDTO) throws InvalidJwtException {
+            @RequestParam String name,
+            @RequestParam String email,
+            @RequestParam String password,
+            @RequestParam String gender,
+            @RequestParam int age,
+            @RequestParam String address,
+            @RequestParam(required = false) Long pollId,
+            @RequestParam(required = false) MultipartFile profileImage) throws IOException {
 
-        // Call the service method to update the candidate
-        return candidateService.updateCandidate(id, candidateDTO);
+        // Update candidate with the service method
+        Candidate updatedCandidate = candidateService.updateCandidate(id, name, email, password, gender, age, address, pollId, profileImage);
+        return ResponseEntity.ok(updatedCandidate);
     }
+
 
 
 }

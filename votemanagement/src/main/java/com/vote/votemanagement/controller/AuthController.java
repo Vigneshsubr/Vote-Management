@@ -13,14 +13,12 @@ import com.vote.votemanagement.repository.UserRepository;
 import com.vote.votemanagement.service.AuthService;
 import com.vote.votemanagement.util.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
 
@@ -155,6 +153,14 @@ public class AuthController {
     @PostMapping("/sign-up")
     public ResponseDTO signUp(@RequestBody SignUpRequest signUpRequest) throws CustomException {
         return authService.signUp(signUpRequest);
+    }
+
+
+    @PostMapping("/signout")
+    public ResponseEntity<SignoutResponseDto> signOut(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
+        String token = authorizationHeader.replace("Bearer ", "");
+        SignoutResponseDto response = authService.signOut(token);
+        return ResponseEntity.ok(response);
     }
 
 }

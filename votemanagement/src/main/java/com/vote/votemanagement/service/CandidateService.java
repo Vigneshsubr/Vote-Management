@@ -46,19 +46,7 @@ public class CandidateService {
         return candidate;
     }
 
-//    // Create a new candidate
-//    public Candidate createCandidate(Candidate candidate, Long pollId) {
-//        Poll poll = pollRepository.findById(pollId)
-//                .orElseThrow(() -> new PollNotFoundException("Poll not found with ID: " + pollId));
-//
-//        // Set the poll for the candidate
-//        candidate.setPoll(poll);
-//
-//        // Save the candidate
-//        return candidateRepository.save(candidate);
-//    }
 
-    // CandidateService.java
 
     public Candidate createCandidate(String name, String email, String password, String gender, int age, String address,  Long pollId, MultipartFile profileImage) throws IOException, IOException {
         // Create a new Candidate instance
@@ -94,38 +82,32 @@ public class CandidateService {
         candidateRepository.deleteById(id);
     }
 
-    public ResponseDTO updateCandidate(Long candidateId, CandidateDTO candidateDTO) throws InvalidJwtException {
+    public Candidate updateCandidate(Long candidateId, String name, String email, String password, String gender, int age, String address, Long pollId, MultipartFile profileImage) throws IOException {
+        Candidate candidate = candidateRepository.findById(candidateId)
+                .orElseThrow(() -> new CandidateNotFoundException("Candidate with ID " + candidateId + " not found"));
 
-        try {
-            // Fetch the candidate by ID
-            Candidate candidate = candidateRepository.findById(candidateId)
-                    .orElseThrow(() -> new InvalidJwtException(" Candidate not found"));
+        candidate.setName(name);
+        candidate.setEmail(email);
+        candidate.setPassword(passwordEncoder.encode(password));
+        candidate.setGender(gender);
+        candidate.setAge(age);
+        candidate.setAddress(address);
 
-            // Update candidate details if provided (e.g., email, username, etc.)
-            candidate.setName(candidateDTO.getName());
-            candidate.setGender(candidateDTO.getGender());
-
-            // Check if pollId is provided for updating the poll
-            if (candidateDTO.getPollId() != null) {
-                Poll poll = pollRepository.findById(candidateDTO.getPollId())
-                        .orElseThrow(() -> new PollNotFoundException(" Poll not found with this id"));
-                candidate.setPoll(poll); // Associate poll with candidate
-            }
-
-            // Save the updated candidate
-            return ResponseDTO.builder()
-                    .message(Constants.UPDATED)
-                    .data(candidateRepository.save(candidate))
-                    .statusCode(200)
-                    .build();
-        } catch (Exception e) {
-            e.printStackTrace(); // Log the exception
-            return ResponseDTO.builder()
-                    .message(" An unexpected error occurred: " + e.getMessage())
-                    .statusCode(500)
-                    .build();
+        // Set the poll if provided
+        if (pollId != null) {
+            Poll poll = pollRepository.findById(pollId)
+                    .orElseThrow(() -> new PollNotFoundException("Poll not found with ID " + pollId));
+            candidate.setPoll(poll);
         }
+
+        // Set profile image if provided
+        if (profileImage != null && !profileImage.isEmpty()) {
+            candidate.setProfileImage(profileImage.getBytes());
+        }
+
+        return candidateRepository.save(candidate);
     }
+
 
     public List<Candidate> getCandidatesByPollId(Long pollId) {
         return candidateRepository.findByPollId(pollId);

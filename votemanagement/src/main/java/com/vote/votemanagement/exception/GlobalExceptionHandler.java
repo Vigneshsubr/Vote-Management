@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -90,9 +93,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(responseDTO, HttpStatus.NOT_FOUND);
     }
     @ExceptionHandler(VoteAlreadyExistsException.class)
-    public ResponseEntity<String> handleVoteAlreadyExistsException(VoteAlreadyExistsException ex) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    public ResponseEntity<ResponseDTO> handleVoteAlreadyExistsException(VoteAlreadyExistsException ex) {
+        logger.error("Vote already exists: {}", ex.getMessage());
+        ResponseDTO responseDTO = new ResponseDTO();
+        responseDTO.setMessage(ex.getMessage());
+        responseDTO.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(responseDTO, HttpStatus.BAD_REQUEST);
     }
-
 
 }

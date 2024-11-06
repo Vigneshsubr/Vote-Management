@@ -24,6 +24,9 @@ public class Vote {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @ManyToOne
+    private Election election;
+
 
     @ManyToOne
     @JoinColumn(name = "poll_id", nullable = false)
