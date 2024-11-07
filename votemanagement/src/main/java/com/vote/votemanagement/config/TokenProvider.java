@@ -44,20 +44,24 @@ public class TokenProvider {
             String username = user.getUsername();
             String name = "";
             Long id = null; // Declare variable for the ID
+            String role = ""; // Variable to store the role
 
             // Check the type of the user and extract the name and id accordingly
             if (user instanceof Admin) {
                 Admin admin = (Admin) user;
                 name = admin.getName(); // Get Admin's name
                 id = admin.getId(); // Get Admin's id
+                role="ADMIN";
             } else if (user instanceof Candidate) {
                 Candidate candidate = (Candidate) user;
                 name = candidate.getName(); // Get Candidate's name
                 id = candidate.getId(); // Get Candidate's id
+                role="CANDIDATE";
             } else if (user instanceof User) {
                 User normalUser = (User) user;
                 name = normalUser.getName(); // Get User's name
-                id = normalUser.getId(); // Get User's id
+                id = normalUser.getId();
+                role="VOTER";// Get User's id
             }
 
             Algorithm algorithm = Algorithm.HMAC256(secretKey);
@@ -66,6 +70,7 @@ public class TokenProvider {
                     .withClaim("UserEmail", user.getUsername())
                     .withClaim("Name", name) // Add the name claim
                     .withClaim("UserId", id) // Add the id claim
+                    .withClaim("Role",role)
                     .withIssuedAt(Instant.now()) // Add issuedAt claim
                     .withExpiresAt(genAccessExperationDate()) // Expiration time for access token
                     .sign(algorithm);
@@ -198,6 +203,12 @@ public class TokenProvider {
         }
         return null;
     }
+
+    public String getRoleFromToken(String token) {
+        DecodedJWT decodedJWT = decodeToken(token);
+        return decodedJWT.getClaim("Role").asString();
+    }
+
 
 
 }
