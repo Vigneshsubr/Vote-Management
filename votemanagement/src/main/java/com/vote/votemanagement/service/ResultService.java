@@ -1,5 +1,6 @@
 package com.vote.votemanagement.service;
 
+import com.vote.votemanagement.dto.ResponseDTO;
 import com.vote.votemanagement.dto.ResultDto;
 import com.vote.votemanagement.entity.Result;
 import com.vote.votemanagement.entity.Poll;
@@ -34,11 +35,10 @@ public class ResultService {
     private CandidateRepository candidateRepository;
 
     // Method to calculate results for a specific poll
-    public List<ResultDto> calculatePollResults(Long pollId) throws CustomException {
-        // Check if results for this poll have already been calculated
+    public ResponseDTO calculatePollResults(Long pollId) throws CustomException {
         boolean isResultAlreadyCalculated = resultRepository.existsByPollId(pollId);
         if (isResultAlreadyCalculated) {
-            throw new CustomException("Poll results have already been calculated.");
+            return new ResponseDTO("Poll results have already been calculated.", null, 409);
         }
 
         Poll poll = pollRepository.findById(pollId)
@@ -48,7 +48,7 @@ public class ResultService {
         long totalVotes = voteRepository.countByPollId(pollId);
 
         if (totalVotes == 0) {
-            throw new CustomException("No votes found for this poll.");
+            return new ResponseDTO("No votes found for this poll.", null, 400);
         }
 
         List<ResultDto> pollResults = new ArrayList<>();
@@ -64,20 +64,54 @@ public class ResultService {
             result.setVotePercentage(votePercentage);
             result.setCalculatedAt(LocalDateTime.now());
 
-            // Save result for each candidate
             resultRepository.save(result);
 
-            // Prepare result DTO
             ResultDto resultDto = new ResultDto();
             resultDto.setPollId(poll.getId());
             resultDto.setCandidateId(candidate.getId());
-            resultDto.setCandidateName(candidate.getUsername());
+            resultDto.setCandidateName(candidate.getName());
             resultDto.setTotalVotes((int) candidateVotes);
             resultDto.setVotePercentage(votePercentage);
 
             pollResults.add(resultDto);
         }
 
-        return pollResults;
+        return new ResponseDTO("Poll results calculated successfully.", pollResults, 200);
+    }
+
+    // Method to create or manually calculate and save poll results
+    public ResponseDTO createPollResults(Long pollId) throws CustomException {
+        return calculatePollResults(pollId);  // Reusing the same logic for simplicity
+    }
+
+    @Transactional
+    public ResponseDTO deletePollResultsByPollId(Long pollId) {
+        if (!resultRepository.existsByPollId(pollId)) {
+            return new ResponseDTO("Poll ID not found: " + pollId, null, 404);
+        }
+        resultRepository.deleteByPollId(pollId);
+        return new ResponseDTO("Poll results for Poll ID " + pollId + " have been deleted successfully.", null, 200);
+    }
+
+    // Method to fetch poll results
+    public ResponseDTO getPollResults(Long pollId) throws CustomException {
+        List<ResultDto> results = new ArrayList<>();
+        List<Result> resultList = resultRepository.findByPollId(pollId);
+
+        if (resultList.isEmpty()) {
+            throw new CustomException("No results found for the given poll.");
+        }
+
+        for (Result result : resultList) {
+            ResultDto dto = new ResultDto();
+            dto.setPollId(result.getPoll().getId());
+            dto.setCandidateId(result.getCandidate().getId());
+            dto.setCandidateName(result.getCandidate().getName());
+            dto.setTotalVotes(result.getTotalVotes());
+            dto.setVotePercentage(result.getVotePercentage());
+            results.add(dto);
+        }
+
+        return new ResponseDTO("Poll results fetched successfully.", results, 200);
     }
 }
