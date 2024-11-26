@@ -105,10 +105,12 @@ public class ResultService {
         for (Result result : resultList) {
             ResultDto dto = new ResultDto();
             dto.setPollId(result.getPoll().getId());
+            dto.setPollTitle(result.getPoll().getPollName());
             dto.setCandidateId(result.getCandidate().getId());
             dto.setCandidateName(result.getCandidate().getName());
             dto.setTotalVotes(result.getTotalVotes());
             dto.setVotePercentage(result.getVotePercentage());
+            dto.setCalculatedAt(result.getCalculatedAt());
             results.add(dto);
         }
 

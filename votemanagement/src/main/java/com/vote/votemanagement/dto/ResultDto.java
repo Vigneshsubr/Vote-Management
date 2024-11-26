@@ -2,6 +2,9 @@ package com.vote.votemanagement.dto;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+import java.util.Date;
+
 @Data
 public class ResultDto {
     private Long pollId;
@@ -10,4 +13,5 @@ public class ResultDto {
     private String candidateName;
     private int totalVotes;
     private double votePercentage;
+    private LocalDateTime calculatedAt;
 }

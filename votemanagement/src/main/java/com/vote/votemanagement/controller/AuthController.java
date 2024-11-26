@@ -87,6 +87,7 @@ public class AuthController {
                 throw new CustomException("Password is not valid");
             }
 
+
             var userNamePassword = new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword());
             var authorizedUser = authenticationManager.authenticate(userNamePassword);
             var principal = authorizedUser.getPrincipal();
@@ -120,7 +121,7 @@ public class AuthController {
         catch(Exception e) {
             System.err.println(e.getMessage());
             ResponseDTO responseDto = new ResponseDTO();
-            responseDto.setMessage("Invalid refresh token");
+            responseDto.setMessage("User Not Found in this email");
             responseDto.setStatusCode(401);
             return responseDto;
         }
