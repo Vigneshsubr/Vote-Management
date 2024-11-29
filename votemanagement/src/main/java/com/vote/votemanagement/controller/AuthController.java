@@ -7,7 +7,6 @@ import com.vote.votemanagement.entity.Admin;
 import com.vote.votemanagement.entity.Candidate;
 import com.vote.votemanagement.entity.User;
 import com.vote.votemanagement.exception.CustomException;
-import com.vote.votemanagement.exception.InvalidJwtException;
 import com.vote.votemanagement.repository.AdminRepository;
 import com.vote.votemanagement.repository.UserRepository;
 import com.vote.votemanagement.service.AuthService;
@@ -32,7 +31,7 @@ public class AuthController {
     @Autowired
     TokenProvider tokenProvider;
 
-    Constants constants;
+
 
     @Autowired
     AuthenticationManager authenticationManager;
@@ -44,38 +43,11 @@ public class AuthController {
     UserRepository userRepository;
 
 
-//    @PostMapping("/sign-up/user")
-//    public ResponseDTO signUpStudent(@RequestBody UserDto userDto) throws InvalidJwtException {
-//
-//        return authService.signUpUser(userDto);
-//    }
-//
-////    @PostMapping("/sign-up/tutor")
-////    public ResponseDTO signUpTutor(@RequestBody TutorDTO tutorDTO) throws InvalidJwtException {
-////
-////        return authService.signUpTutor(tutorDTO);
-////    }
-//
-//
-//    @PostMapping("sign-up/admin")
-//    public ResponseDTO signUpAdmin(@RequestBody AdminDTO adminDTO)throws InvalidJwtException{
-//        return authService.signUpAdmin(adminDTO);
-//    }
-//
-//    @PostMapping("sign-up/candidate")
-//    public ResponseDTO signUpCandidate(@RequestBody CandidateDTO candidateDTO)throws InvalidJwtException{
-////        if (candidateDTO.getPollId() == null) {
-////            throw new InvalidJwtException("Poll ID must not be null");
-////        }
-//        return authService.signUpCandidate(candidateDTO);
-//    }
 
     @PostMapping("/sign-in")
-    public ResponseDTO signIn(@RequestBody SignInDto user) throws AuthenticationException,CustomException {
+    public ResponseDTO signIn(@RequestBody final SignInDto user) throws AuthenticationException,CustomException {
 
 
-        // var userNamePassword = new UsernamePasswordAuthenticationToken((tokenProvider.emailValidation(user.getEmail())),tokenProvider.passwordValidation(user.getPassword()));
-        // var userNamePassword = new UsernamePasswordAuthenticationToken(user.getEmail(),user.getPassword());
 
 
         try {
@@ -157,7 +129,7 @@ public class AuthController {
     }
 
 
-    @PostMapping("/signout")
+    @PostMapping("/sign-out")
     public ResponseEntity<SignoutResponseDto> signOut(@RequestHeader(HttpHeaders.AUTHORIZATION) String authorizationHeader) {
         String token = authorizationHeader.replace("Bearer ", "");
         SignoutResponseDto response = authService.signOut(token);

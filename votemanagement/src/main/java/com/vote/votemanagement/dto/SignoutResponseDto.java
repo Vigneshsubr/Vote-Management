@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class SignoutResponseDto {
-    private String message;
+    public String message;
 
     public SignoutResponseDto(String message) {
         this.message = message;

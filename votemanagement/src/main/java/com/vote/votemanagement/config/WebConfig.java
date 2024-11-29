@@ -25,9 +25,5 @@ public class WebConfig implements WebMvcConfigurer {
                 .maxAge(3600);  // Max age for the CORS preflight requests
     }
 
-//    @Override
-//    public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-//        converters.add(new ByteArrayHttpMessageConverter());
-//        converters.add(new MappingJackson2HttpMessageConverter());
-//    }
+
 }

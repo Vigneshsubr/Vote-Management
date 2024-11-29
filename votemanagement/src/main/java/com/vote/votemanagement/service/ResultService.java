@@ -23,16 +23,16 @@ import java.util.List;
 public class ResultService {
 
     @Autowired
-    private ResultRepository resultRepository;
+    public ResultRepository resultRepository;
 
     @Autowired
-    private VoteRepository voteRepository;
+    public VoteRepository voteRepository;
 
     @Autowired
-    private PollRepository pollRepository;
+    public PollRepository pollRepository;
 
     @Autowired
-    private CandidateRepository candidateRepository;
+    public CandidateRepository candidateRepository;
 
     // Method to calculate results for a specific poll
     public ResponseDTO calculatePollResults(Long pollId) throws CustomException {
